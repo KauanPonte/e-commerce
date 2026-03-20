@@ -3,6 +3,7 @@ import { Product } from './model/product.model'
 import ProductCard from './components/card/ProductCard.vue'
 import { Cart } from './model/cart.model'
 import { Category } from './model/category.model'
+import CartItem from './components/card/CartItem.vue'
 
 export default {
   data() {
@@ -18,79 +19,73 @@ export default {
     }
   },
   methods: {
-    addItem(product: Product) {
-      const existItem = this.cart.list.some((item) => item.product.name === product.name)
-      if (existItem === true) {
-        this.cart.list.map((item) => {
-          if (item.product.name === product.name) {
-            item.quantity += 1
-            return {
-              product: item.product,
-              quantity: item.quantity + 1,
-            }
-          } else {
-            return item
-          }
-        })
-        this.cart.total += 1
-      } else {
-        this.cart.list.push({ product, quantity: 1 })
-        this.cart.total += 1
-      }
-
-      this.cart.PiceTotal = this.getTotalPrice()
+    addItem(item: Product) {
+      this.cart.addItem(item)
     },
     getTotalPrice(): number {
-      return this.cart.list.reduce((total, item) => {
-        return (total += item.product.price * item.quantity)
-      }, 0)
+      return this.cart.getTotalPrice()
     },
-    removeItem(product: Product) {
-      const existItem = this.cart.list.some((item) => item.product.name === product.name)
-      if (existItem) {
-        this.cart.list.map((item) => {
-          if (item.product.name === product.name) {
-            item.quantity -= 1
-            this.cart.total -= 1
-            this.cart.PiceTotal = this.getTotalPrice()
-            if (item.quantity === 0) {
-              this.cart.list.pop()
-            }
-          }
-        })
-      }
+    removeItem(item: Product) {
+      this.cart.removeItem(item)
     },
-    deleteItem(product: Product) {
-      const existItem = this.cart.list.some((item) => item.product.name === product.name)
-      if (existItem) {
-        this.cart.list.map((item) => {
-          this.cart.list.pop()
-          this.cart.PiceTotal = this.getTotalPrice()
-          this.cart.total -= item.quantity
-        })
-      }
+    deleteItem(item: Product) {
+      this.cart.deleteItem(item)
+    },
+    deleteAll() {
+      this.$confirm.require({
+        message: 'Tem certeza que deseja excluir todos os itens do carrinho?',
+        header: 'Confirmar exclusão',
+        icon: 'pi pi-exclamation-triangle',
+        acceptLabel: 'Sim, excluir',
+        rejectLabel: 'Cancelar',
+        accept: () => {
+          this.cart.deleteAll()
+        },
+      })
     },
   },
-  components: { ProductCard },
+  components: { ProductCard, CartItem },
 }
 </script>
-
 <template>
+  <ConfirmDialog />
   <main>
-    <div v-for="(product, index) in products" :key="index">
-      <ProductCard :product="product" @on-click="addItem" @remove-click="removeItem" />
-    </div>
+    <section class="pt-8 shadow-lg grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+      <div v-for="(product, index) in products" :key="index">
+        <ProductCard :product="product" @on-click="addItem" />
+      </div>
+    </section>
   </main>
-  <div>
-    <h1>Carinho</h1>
-    <div v-for="(item, index) in cart.list" :key="index">
-      <h2>{{ item.product.name }}</h2>
-      <p>qtd: {{ item.quantity }}</p>
-      <button @click="removeItem(item.product)">Remover</button>
-      <button @click="deleteItem(item.product)">Excluir</button>
+  <div class="mt-5 flex flex-col gap-4">
+    <h1
+      class="border border-white-100 bg-green-600 rounded-lg h-10 w-1/15 flex items-center justify-center"
+    >
+      Carinho
+    </h1>
+    <div v-if="cart.list.length > 0" class="flex flex-col gap-4">
+      <div v-for="(item, index) in cart.list" :key="index">
+        <CartItem
+          :item="item"
+          @remove-click="removeItem"
+          @delete-click="deleteItem"
+          @add-click="addItem"
+        />
+      </div>
     </div>
-    <p>---------------------------</p>
+    <div
+      v-else
+      class="border border-white-100 bg-green-600 rounded-lg h-10 w-1/5 flex items-center justify-center"
+    >
+      <h1>{{ 'Seu carrinho está vazio!' }}</h1>
+    </div>
+
+    <p>------------------------------------------------</p>
     <p>Total de Itens: {{ cart.total }}</p>
-    <p>Valor total: R${{ cart.PiceTotal.toFixed(2).replace('.', ',') }}</p>
+    <div class="flex items-center justify-between pb-8" style="max-width: 420px">
+      <p>Valor total: R${{ cart.PiceTotal.toFixed(2).replace('.', ',') }}</p>
+      <PrimeButton v-if="cart.list.length > 0" severity="danger" @click="deleteAll()"
+        >Excluir Todos os itens</PrimeButton
+      >
+    </div>
   </div>
 </template>

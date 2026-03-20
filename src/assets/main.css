@@ -1,12 +1,1 @@
-p {
-  margin: 3px 0;
-}
-
-h1 {
-  margin: 6px 0px;
-  margin-top: 30px;
-}
-
-h2 {
-  margin: 4px;
-}
+@import 'tailwindcss';
