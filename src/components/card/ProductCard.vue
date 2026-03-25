@@ -1,28 +1,44 @@
 <template>
-  <!-- <article class="w-[200px]">
-    <h1>{{ product?.name }}</h1>
-    <p>Categoria: {{ product?.category.title }}</p>
-    <p>{{ product?.description }}</p>
-    <p>R$: {{ product?.price.toFixed(2).replace('.', ',') }}</p>
-    <PrimeButton @click="addItem(product!)">Adicionar</PrimeButton>
-  </article> -->
-  <PrimeCard :style="{ width: '100%', minWidth: '200px', maxWidth: '220px' }">
-    <template #header>
-      <img src="https://picsum.photos/200" class="mt-3 w-7/8 object-cover mx-auto rounded-lg" />
-    </template>
-    <template #title>
-      <h1>{{ product?.name }}</h1>
-    </template>
-    <template #content>
-      <p>R$: {{ product?.price.toFixed(2).replace('.', ',') }} o kg</p>
-      <p>{{ product?.description }}</p>
-    </template>
-    <template #footer>
-      <div class="flex flex-row-reverse">
-        <PrimeButton @click="addItem(product!)">Adicionar</PrimeButton>
+  <div
+    class="bg-white rounded-xl shadow hover:shadow-xl transition-all duration-200 overflow-hidden flex flex-col h-full group"
+  >
+    <div class="relative overflow-hidden bg-gray-100 h-48">
+      <img
+        :src="product?.image || `http://picsum.photos/seed/${product?.id}/400/280`"
+        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        :alt="product?.name"
+      />
+      <div
+        v-if="product && product.desconto > 0"
+        class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full"
+      >
+        -{{ Math.round(product.desconto * 100) }}%
       </div>
-    </template>
-  </PrimeCard>
+    </div>
+
+    <div class="p-4 flex flex-col flex-1">
+      <h3 class="font-semibold text-gray-800 text-base mb-1 line-clamp-2">
+        {{ product?.name }}
+      </h3>
+      <p class="text-gray-500 text-sm mb-4 flex-1 line-clamp-2">{{ product?.description }}</p>
+
+      <div class="mt-auto">
+        <div class="flex items-baseline gap-1 mb-3">
+          <span class="text-xl font-bold text-blue-700">
+            R$ {{ product?.price.toFixed(2).replace('.', ',') }}
+          </span>
+          <span class="text-gray-400 text-xs">/ kg</span>
+        </div>
+        <PrimeButton
+          unstyled
+          @click.stop="addItem(product!)"
+          class="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white py-2 px-4 rounded-lg font-medium text-sm transition-colors duration-200"
+        >
+          Adicionar ao carrinho
+        </PrimeButton>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
