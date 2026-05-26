@@ -35,6 +35,33 @@
           >
             Produtos
           </RouterLink>
+          <!-- Saudação personalizada + logout -->
+          <div v-if="authStore.isAuthenticated" class="flex items-center gap-3">
+            <div class="flex items-center gap-2">
+              <div class="w-7 h-7 rounded-full bg-yellow-400 flex items-center justify-center shrink-0">
+                <span class="text-gray-800 text-xs font-bold">
+                  {{ authStore.user?.name?.charAt(0).toUpperCase() }}
+                </span>
+              </div>
+              <span class="text-white text-sm hidden xl:block">
+                Olá, <span class="font-semibold text-yellow-300">{{ authStore.user?.name }}</span>
+              </span>
+            </div>
+            <button
+              @click="handleLogout"
+              class="text-blue-200 hover:text-white text-xs transition-colors"
+            >
+              Sair
+            </button>
+          </div>
+          <RouterLink
+            v-else
+            to="/login"
+            class="text-white text-sm font-medium hover:text-yellow-300 transition-colors"
+          >
+            Entrar
+          </RouterLink>
+
           <RouterLink
             to="/cart"
             class="text-white hover:text-yellow-300 transition-colors relative"
@@ -77,13 +104,24 @@
 
 <script lang="ts">
 import { defineComponent, provide, reactive } from 'vue'
+import { useRouter } from 'vue-router'
 import { Cart } from '@/model/cart.model'
+import { useAuthStore } from '@/stores/auth.store'
 
 export default defineComponent({
   setup() {
     const cart = reactive(new Cart())
     provide('cart', cart)
-    return { cart }
+
+    const authStore = useAuthStore()
+    const router = useRouter()
+
+    function handleLogout() {
+      authStore.logout()
+      router.push('/login')
+    }
+
+    return { cart, authStore, handleLogout }
   },
 })
 </script>

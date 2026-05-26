@@ -13,18 +13,9 @@ export class Cart {
 
   addItem(product: Product) {
     const existItem = this.list.some((item) => item.product.name === product.name)
-    if (existItem === true) {
-      this.list.map((item) => {
-        if (item.product.name === product.name) {
-          item.quantity += 1
-          return {
-            product: item.product,
-            quantity: item.quantity + 1,
-          }
-        } else {
-          return item
-        }
-      })
+    const found = this.list.find((item) => item.product.name === product.name)
+    if (found) {
+      found.quantity += 1
       this.total += 1
     } else {
       this.list.push({ product, quantity: 1 })

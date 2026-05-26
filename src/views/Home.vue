@@ -6,8 +6,16 @@ import { Category } from '@/model/category.model'
 import { Product } from '@/model/product.model'
 import { products } from '@/data/products'
 
+import { useAuthStore } from '@/stores/auth.store'
+import { useRouter } from 'vue-router'
+
 export default {
   inject: ['cart'],
+  setup() {
+    const authStore = useAuthStore()
+    const router = useRouter()
+    return { authStore, router }
+  },
   data() {
     const category = new Category(2930, 'Fruta')
     return {
@@ -17,6 +25,10 @@ export default {
   },
   methods: {
     addItem(item: Product) {
+      if (!this.authStore.isAuthenticated) {
+        this.router.push({ path: '/login', query: { redirect: '/' } })
+        return
+      }
       ;(this.cart as Cart).addItem(item)
     },
     goToDatail(product: Product) {

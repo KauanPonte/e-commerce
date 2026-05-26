@@ -35,7 +35,7 @@
         </RouterLink>
       </nav>
 
-      <div class="px-4 py-4 border-t border-gray-700">
+      <div class="px-4 py-4 border-t border-gray-700 flex flex-col gap-1">
         <RouterLink
           to="/"
           class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white transition-colors"
@@ -43,6 +43,13 @@
           <i class="pi pi-arrow-left text-base" />
           Voltar à loja
         </RouterLink>
+        <button
+          @click="handleLogout"
+          class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-red-400 transition-colors text-left"
+        >
+          <i class="pi pi-sign-out text-base" />
+          Sair
+        </button>
       </div>
     </aside>
 
@@ -64,9 +71,17 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth.store'
 
 const route = useRoute()
+const router = useRouter()
+const authStore = useAuthStore()
+
+function handleLogout() {
+  authStore.logout()
+  router.push('/login')
+}
 
 const breadcrumbHome = { icon: 'pi pi-home', route: '/admin' }
 
