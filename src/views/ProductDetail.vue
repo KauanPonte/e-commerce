@@ -5,16 +5,22 @@ import { useRoute, useRouter } from 'vue-router'
 import { products } from '@/data/products'
 import { Cart } from '@/model/cart.model'
 import type { Product } from '@/model/product.model'
+import { useAuthStore } from '@/stores/auth.store'
 
 const route = useRoute()
 const router = useRouter()
 const cart = inject<Cart>('cart')!
+const authStore = useAuthStore()
 
 const product = computed(() =>
   products.find((p) => p.id === Number(route.params.id))
 )
 
 function addToCart() {
+  if (!authStore.isAuthenticated) {
+    router.push({ path: '/login', query: { redirect: route.fullPath } })
+    return
+  }
   if (product.value) {
     cart.addItem(product.value as Product)
     router.push('/cart')
