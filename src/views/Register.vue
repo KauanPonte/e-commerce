@@ -5,7 +5,7 @@
     <!-- Painel esquerdo -->
     <div class="hidden lg:flex w-1/2 bg-blue-700 flex-col items-center justify-center px-16 gap-6">
       <RouterLink to="/" class="text-white text-4xl font-bold tracking-tight">
-        ShopFruit
+        PonteMrket
       </RouterLink>
       <p class="text-blue-200 text-center text-lg leading-relaxed max-w-xs">
         Crie sua conta e aproveite as melhores ofertas de frutas frescas.
@@ -21,7 +21,7 @@
     <div class="flex-1 flex items-center justify-center bg-gray-50 px-6 py-12">
       <div class="w-full max-w-sm">
         <RouterLink to="/" class="lg:hidden block text-blue-700 text-2xl font-bold mb-8 text-center">
-          ShopFruit
+          PonteMrket
         </RouterLink>
 
         <h1 class="text-2xl font-bold text-gray-800 mb-1">Criar conta</h1>

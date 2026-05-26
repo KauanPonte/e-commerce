@@ -3,7 +3,7 @@
     <header class="bg-blue-700 shadow-lg sticky top-0 z-50">
       <div class="max-w-7xl mx-auto px-4 h-16 flex items-center gap-6">
         <RouterLink to="/" class="text-white text-xl font-bold tracking-tight shrink-0">
-          ShopFruit
+          PonteMrket
         </RouterLink>
 
         <div class="flex-1 max-w-xl">
@@ -96,7 +96,7 @@
 
     <footer class="bg-gray-800 text-gray-400 py-8 mt-auto">
       <div class="max-w-7xl mx-auto px-4 text-center">
-        <p class="text-sm">© 2024 ShopFruit — Todos os direitos reservados</p>
+        <p class="text-sm">© 2024 PonteMrket — Todos os direitos reservados</p>
       </div>
     </footer>
   </div>

@@ -4,7 +4,7 @@
   >
     <div class="relative overflow-hidden bg-gray-100 h-48">
       <img
-        :src="product?.image || `http://picsum.photos/seed/${product?.id}/400/280`"
+        :src="product?.image || `https://picsum.photos/seed/${product?.id}/400/280`"
         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         :alt="product?.name"
       />
@@ -27,7 +27,7 @@
           <span class="text-xl font-bold text-blue-700">
             R$ {{ product?.price.toFixed(2).replace('.', ',') }}
           </span>
-          <span class="text-gray-400 text-xs">/ kg</span>
+          <span v-if="product?.category" class="text-gray-400 text-xs">{{ product.category }}</span>
         </div>
         <PrimeButton
           unstyled

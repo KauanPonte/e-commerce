@@ -6,5 +6,6 @@ export class Product {
     public id: number,
     public desconto: number,
     public image: string = '',
+    public category: string = '',
   ) {}
 }

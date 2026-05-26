@@ -1,10 +1,11 @@
 {
-  "name": "ecommerce",
+  "name": "pontemrket",
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:server": "tsx watch server/src/server.ts",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
@@ -17,12 +18,15 @@
   "dependencies": {
     "@primeuix/themes": "^2.0.3",
     "@tailwindcss/vite": "^4.2.1",
+    "@types/express": "^5.0.6",
     "@vuelidate/core": "^2.0.3",
     "@vuelidate/validators": "^2.0.4",
+    "express": "^5.2.1",
     "pinia": "^3.0.4",
     "primeicons": "^7.0.0",
     "primevue": "^4.5.4",
     "tailwindcss": "^4.2.1",
+    "tsx": "^4.22.3",
     "vue": "^3.5.29",
     "vue-router": "^5.0.3"
   },

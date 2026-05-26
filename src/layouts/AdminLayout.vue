@@ -3,7 +3,7 @@
     <!-- Sidebar -->
     <aside class="w-64 bg-gray-900 text-white flex flex-col">
       <div class="px-6 py-5 border-b border-gray-700">
-        <h1 class="text-lg font-bold text-white">ShopFruit</h1>
+        <h1 class="text-lg font-bold text-white">PonteMrket</h1>
         <span class="text-xs text-gray-400">Painel Administrativo</span>
       </div>
 
