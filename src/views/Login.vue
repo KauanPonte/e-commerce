@@ -5,7 +5,7 @@
     <!-- Painel esquerdo — identidade da marca -->
     <div class="hidden lg:flex w-1/2 bg-blue-700 flex-col items-center justify-center px-16 gap-6">
       <RouterLink to="/" class="text-white text-4xl font-bold tracking-tight">
-        ShopFruit
+        PonteMrket
       </RouterLink>
       <p class="text-blue-200 text-center text-lg leading-relaxed max-w-xs">
         As melhores frutas frescas, direto para a sua mesa.
@@ -22,7 +22,7 @@
       <div class="w-full max-w-sm">
         <!-- Logo mobile (só aparece em telas pequenas) -->
         <RouterLink to="/" class="lg:hidden block text-blue-700 text-2xl font-bold mb-8 text-center">
-          ShopFruit
+          PonteMrket
         </RouterLink>
 
         <h1 class="text-2xl font-bold text-gray-800 mb-1">Bem-vindo de volta</h1>
