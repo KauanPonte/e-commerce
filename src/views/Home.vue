@@ -3,11 +3,9 @@
 import ProductCard from '@/components/card/ProductCard.vue'
 import { Cart } from '@/model/cart.model'
 import { Product } from '@/model/product.model'
-import { products } from '@/data/products'
+import { getProducts } from '@/services/api'
 import { useAuthStore } from '@/stores/auth.store'
 import { useRouter } from 'vue-router'
-
-const categories = ['Todos', ...new Set(products.map((p) => p.category).filter(Boolean))]
 
 export default {
   inject: ['cart'],
@@ -18,16 +16,32 @@ export default {
   },
   data() {
     return {
-      products,
-      categories,
+      products: [] as Product[],
       activeCategory: 'Todos',
+      loading: true,
+      error: null as string | null,
     }
   },
   computed: {
-    filteredProducts(): Product[] {
-      if (this.activeCategory === 'Todos') return this.products
-      return this.products.filter((p) => p.category === this.activeCategory)
+    categories(): string[] {
+      const cats = this.products.map((p) => p.category).filter(Boolean)
+      return ['Todos', ...new Set(cats)]
     },
+    filteredProducts(): Product[] {
+      const list = this.activeCategory === 'Todos'
+        ? this.products
+        : this.products.filter((p) => p.category === this.activeCategory)
+      return list.slice(0, 6)
+    },
+  },
+  async created() {
+    try {
+      this.products = await getProducts()
+    } catch {
+      this.error = 'Não foi possível carregar os produtos. O servidor está rodando?'
+    } finally {
+      this.loading = false
+    }
   },
   methods: {
     addItem(item: Product) {
@@ -47,7 +61,7 @@ export default {
 
 <template>
   <!-- Hero Banner -->
-  <section class="bg-gradient-to-r from-blue-800 to-blue-500 text-white py-14 px-4">
+  <section class="bg-linear-to-r from-blue-800 to-blue-500 text-white py-14 px-4">
     <div class="max-w-7xl mx-auto flex flex-col gap-3">
       <span class="bg-yellow-400 text-gray-800 text-xs font-bold px-3 py-1 rounded-full w-fit">
         🛒 {{ products.length }} produtos disponíveis
@@ -61,46 +75,68 @@ export default {
     </div>
   </section>
 
-  <!-- Main content -->
   <div class="max-w-7xl mx-auto px-4 py-8">
 
-    <!-- Filtros de categoria -->
-    <div class="flex flex-wrap gap-2 mb-8">
-      <button
-        v-for="cat in categories"
-        :key="cat"
-        @click="activeCategory = cat"
-        :class="[
-          'px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200',
-          activeCategory === cat
-            ? 'bg-blue-700 text-white shadow'
-            : 'bg-gray-100 text-gray-600 hover:bg-gray-200',
-        ]"
-      >
-        {{ cat }}
-      </button>
+    <!-- Estado de loading -->
+    <div v-if="loading" class="flex justify-center items-center py-20">
+      <div class="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
     </div>
 
-    <!-- Header da seção -->
-    <div class="flex items-center justify-between mb-6">
-      <h2 class="text-xl font-bold text-gray-800">
-        {{ activeCategory === 'Todos' ? 'Produtos em Destaque' : activeCategory }}
-      </h2>
-      <span class="text-gray-500 text-sm bg-gray-100 px-3 py-1 rounded-full">
-        {{ filteredProducts.length }} produto{{ filteredProducts.length !== 1 ? 's' : '' }}
-      </span>
+    <!-- Estado de erro -->
+    <div v-else-if="error" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+      {{ error }}
     </div>
 
-    <!-- Grid de produtos -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      <div
-        v-for="product in filteredProducts"
-        :key="product.id"
-        class="cursor-pointer"
-        @click="goToDatail(product)"
-      >
-        <ProductCard :product="product" @on-click="addItem" />
+    <!-- Conteúdo carregado -->
+    <template v-else>
+      <!-- Filtros de categoria -->
+      <div class="flex flex-wrap gap-2 mb-8">
+        <button
+          v-for="cat in categories"
+          :key="cat"
+          @click="activeCategory = cat"
+          :class="[
+            'px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200',
+            activeCategory === cat
+              ? 'bg-blue-700 text-white shadow'
+              : 'bg-gray-100 text-gray-600 hover:bg-gray-200',
+          ]"
+        >
+          {{ cat }}
+        </button>
       </div>
-    </div>
+
+      <!-- Header da seção -->
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold text-gray-800">
+          {{ activeCategory === 'Todos' ? 'Produtos em Destaque' : activeCategory }}
+        </h2>
+        <span class="text-gray-500 text-sm bg-gray-100 px-3 py-1 rounded-full">
+          {{ filteredProducts.length }} produto{{ filteredProducts.length !== 1 ? 's' : '' }}
+        </span>
+      </div>
+
+      <!-- Grid de produtos -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div
+          v-for="product in filteredProducts"
+          :key="product.id"
+          class="cursor-pointer"
+          @click="goToDatail(product)"
+        >
+          <ProductCard :product="product" @on-click="addItem" />
+        </div>
+      </div>
+
+      <!-- Botão Ver todos -->
+      <div class="flex justify-center mt-10">
+        <RouterLink
+          to="/products"
+          class="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-8 py-3 rounded-full transition-colors"
+        >
+          Ver todos os produtos
+        </RouterLink>
+      </div>
+    </template>
   </div>
 </template>
