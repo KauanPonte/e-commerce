@@ -9,13 +9,16 @@
         <div class="flex-1 max-w-xl">
           <div class="flex rounded-lg overflow-hidden">
             <input
+              v-model="searchQuery"
               type="text"
               placeholder="Buscar produtos..."
               class="flex-1 px-4 py-2 text-sm text-gray-800 focus:outline-none"
+              @keyup.enter="handleSearch"
             />
             <PrimeButton
               unstyled
               class="bg-yellow-400 hover:bg-yellow-500 px-5 text-sm font-semibold text-gray-800 transition-colors"
+              @click="handleSearch"
             >
               Buscar
             </PrimeButton>
@@ -103,7 +106,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, provide, reactive } from 'vue'
+import { defineComponent, provide, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Cart } from '@/model/cart.model'
 import { useAuthStore } from '@/stores/auth.store'
@@ -115,13 +118,20 @@ export default defineComponent({
 
     const authStore = useAuthStore()
     const router = useRouter()
+    const searchQuery = ref('')
+
+    function handleSearch() {
+      const term = searchQuery.value.trim()
+      if (!term) return
+      router.push({ path: '/products', query: { search: term } })
+    }
 
     function handleLogout() {
       authStore.logout()
       router.push('/login')
     }
 
-    return { cart, authStore, handleLogout }
+    return { cart, authStore, handleLogout, searchQuery, handleSearch }
   },
 })
 </script>
